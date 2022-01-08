@@ -26,6 +26,9 @@ async function affichageDetails() {
 }
 //affichageDetails();
 
+// -----------------------------------------------------------------------------------
+
+// creation du contenu de la page
 async function creationFiche() {
   let details = await rechercheDetailsArticle();
 
@@ -59,3 +62,56 @@ async function creationFiche() {
   document.getElementById("price").innerText = await prix;
 }
 creationFiche();
+
+// -----------------------------------------------------------------------------------
+
+// creation localStorage
+//localStorage.setItem("prenom", "dany");
+// ajout objet à local storage
+//localStorage.setItem("nom", "villa");
+// recupération local storage
+//let local = localStorage.getItem("nom");
+
+// affichage local storage
+//console.log(local);
+
+// -----------------------------------------------------------------------------------
+
+// recupération de la couleur choisie
+function couleurChoisie() {
+  let choixCouleur = document.getElementById("colors");
+  choixCouleur.addEventListener("change", function () {
+    let couleur = choixCouleur.value;
+    return couleur;
+  });
+}
+
+// recupération de la quantite choisie
+function quantiteChoisie() {
+  let choixQuantite = document.getElementById("quantity");
+  choixQuantite.addEventListener("change", function () {
+    let quantite = choixQuantite.value;
+    return quantite;
+  });
+}
+
+// creation objet
+let kanap1 = {
+  id: idArticle(),
+  couleur: couleurChoisie(),
+  quantité: quantiteChoisie(),
+};
+
+// -----------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------------
+
+// ajout a localStorage
+let kanap1Ligne = JSON.stringify(kanap1);
+localStorage.setItem("obj", kanap1Ligne);
+
+// recup local storage
+let kanapRecup = localStorage.getItem("obj");
+
+// affichage local storage
+let objJson = JSON.parse(kanapRecup);
+// console.log(objJson);
