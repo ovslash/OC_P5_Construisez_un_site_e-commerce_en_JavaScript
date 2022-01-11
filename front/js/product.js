@@ -65,53 +65,65 @@ creationFiche();
 
 // -----------------------------------------------------------------------------------
 
-// creation localStorage
-//localStorage.setItem("prenom", "dany");
-// ajout objet à local storage
-//localStorage.setItem("nom", "villa");
-// recupération local storage
-//let local = localStorage.getItem("nom");
-
-// affichage local storage
-//console.log(local);
-
-// -----------------------------------------------------------------------------------
-
-// recupération de la couleur choisie
-function couleurChoisie() {
+function ajoutPanier() {
+  // recupération de la couleur choisie
   let choixCouleur = document.getElementById("colors");
-  choixCouleur.addEventListener("change", function () {
-    let couleur = choixCouleur.value;
-    return couleur;
-  });
-}
+  let couleur = choixCouleur.value;
 
-// recupération de la quantite choisie
-function quantiteChoisie() {
+  // recupération de la quantite choisie
   let choixQuantite = document.getElementById("quantity");
-  choixQuantite.addEventListener("change", function () {
-    let quantite = choixQuantite.value;
-    return quantite;
-  });
+  let quantite = choixQuantite.value;
+
+  // creation de l'objet qui ira dans localStorage
+  let kanapVersPanier = {
+    id: idArticle(),
+    couleur: couleur,
+    quantité: quantite,
+  };
+
+  //-----------------------------------------------------------------------------------
+
+  // creation panier si panier vide
+  let contenuPanier = JSON.parse(localStorage.getItem("contenuPanier"));
+  if (contenuPanier === null) {
+    contenuPanier = [];
+  }
+
+  // Recherche si id/couleur déjà présent dans le panier
+  let dejaPresent = contenuPanier.find(
+    (element) => element.id === idArticle() && element.couleur === couleur
+  );
+
+  // mise à jour du panier si id/couleur déjà présent dans le panier
+  if (dejaPresent) {
+    let quantiteAvant = Number(dejaPresent.quantité);
+    let quantitePlus = Number(quantite);
+    dejaPresent.quantité = quantiteAvant + quantitePlus;
+    localStorage.setItem("contenuPanier", JSON.stringify(contenuPanier));
+  } else {
+    // mise à jour du panier si id/couleur non présent dans le panier
+    contenuPanier.push(kanapVersPanier);
+    localStorage.setItem("contenuPanier", JSON.stringify(contenuPanier));
+  }
+  //-----------------------------------------------------------------------------------
+
+  // affichage panier
+  let panier = JSON.parse(localStorage.getItem("contenuPanier"));
+  console.log("CONTENU DU PANIER =");
+  console.table(panier);
+  console.log(
+    "================================================================================================================================================"
+  );
 }
 
-// creation objet
-let kanap1 = {
-  id: idArticle(),
-  couleur: couleurChoisie(),
-  quantité: quantiteChoisie(),
-};
-
 // -----------------------------------------------------------------------------------
 // -----------------------------------------------------------------------------------
 
-// ajout a localStorage
-let kanap1Ligne = JSON.stringify(kanap1);
-localStorage.setItem("obj", kanap1Ligne);
-
-// recup local storage
-let kanapRecup = localStorage.getItem("obj");
-
-// affichage local storage
-let objJson = JSON.parse(kanapRecup);
-// console.log(objJson);
+// déclencheur pour ajout panier
+function conditionAjoutPanier() {
+  let boutonAjoutPanier = document.getElementById("addToCart");
+  boutonAjoutPanier.addEventListener("click", function () {
+    ajoutPanier();
+  });
+}
+conditionAjoutPanier();
