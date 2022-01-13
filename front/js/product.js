@@ -65,7 +65,13 @@ creationFiche();
 
 // -----------------------------------------------------------------------------------
 
-function ajoutPanier() {
+async function ajoutPanier() {
+  let details = await rechercheDetailsArticle();
+  let nom = await details["name"];
+  let prix = await details["price"];
+  let altTxt = await details["altTxt"];
+  let imageUrl = await details["imageUrl"];
+
   // recupération de la couleur choisie
   let choixCouleur = document.getElementById("colors");
   let couleur = choixCouleur.value;
@@ -79,6 +85,10 @@ function ajoutPanier() {
     id: idArticle(),
     couleur: couleur,
     quantité: quantite,
+    nom: nom,
+    prix: prix,
+    "texte Alternatif": altTxt,
+    "url de l'image": imageUrl,
   };
 
   //-----------------------------------------------------------------------------------

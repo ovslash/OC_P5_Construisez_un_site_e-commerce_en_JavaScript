@@ -4,7 +4,7 @@ async function rechercheArticles() {
   return await articlesTrouves.json();
 }
 
-// affichage articles dans la console sous forme de tableau
+// affichage articles dans l'API sous forme de tableau
 async function affichageArticles() {
   let articles = await rechercheArticles();
   console.table(articles);
