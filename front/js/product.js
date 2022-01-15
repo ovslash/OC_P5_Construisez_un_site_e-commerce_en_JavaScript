@@ -86,7 +86,6 @@ async function ajoutPanier() {
     couleur: couleur,
     quantité: quantite,
     nom: nom,
-    prix: prix,
     "texte Alternatif": altTxt,
     "url de l'image": imageUrl,
   };

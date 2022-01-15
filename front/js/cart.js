@@ -3,19 +3,33 @@ let panierRecup = JSON.parse(localStorage.getItem("contenuPanier"));
 console.log("CONTENU DU PANIER DU LOCALSTORAGE =");
 console.table(panierRecup);
 
-// ------------------------------------------------------------------------------------------------------------------------
+// Recherche des articles présent dans l'API
+async function rechercheArticles() {
+  let articlesTrouves = await fetch("http://localhost:3000/api/products");
+  return await articlesTrouves.json();
+}
 
 // ------------------------------------------------------------------------------------------------------------------------
 
 // creation du contenu de la page
-function creationPanier() {
+async function creationPanier() {
+  //--------------------
+  let ArticleAPI = await rechercheArticles();
+  const idArticlesAPI = await ArticleAPI.map((el) => el._id);
+  //------------------------
   for (let articles of panierRecup) {
-    let couleur = articles["couleur"];
     let id = articles["id"];
+    //------------------------
+    let indexId = await idArticlesAPI.indexOf(id);
+    let prix = await ArticleAPI[indexId].price;
+
+    //------------------------
+    let couleur = articles["couleur"];
+
     let url = articles["url de l'image"];
     let txtAlt = articles["texte Alternatif"];
     let nom = articles["nom"];
-    let prix = articles["prix"];
+    // let prix = articles["prix"];
     let quantite = articles["quantité"];
 
     // creation balise article
@@ -109,3 +123,42 @@ function creationPanier() {
   }
 }
 creationPanier();
+
+// ---------------------------------------------------------------------------
+
+// gestion du bouton supprimer
+let boutonSupprimer = document.getElementsByClassName("deleteItem");
+console.log(boutonSupprimer);
+
+// bouton supprimer doit etre un tableau
+
+// boucle avec une itération par article
+for (let i = 0; i < boutonSupprimer.length; i++) {
+  boutonSupprimer[i].addEventListener("click", function () {
+    console.log(i);
+    // modification de localStorage
+    panierRecup.splice(i, 1);
+    console.table(panierRecup);
+    localStorage.setItem("contenuPanier", JSON.stringify(panierRecup));
+    // modification de l'affichage
+    baliseArticleASupprimer = boutonSupprimer[i].closest("article");
+    baliseArticleASupprimer.remove();
+  });
+}
+
+// ---------------------------------------------------------------------------
+
+// gestion modification quantite
+let quantiteModif = document.getElementsByClassName("itemQuantity");
+
+//for (let i = 0; i < quantiteModif.length; i++) {
+//  quantiteModif[i].addEventListener("change", function () {
+//    console.log(quantiteModif[i].value);
+//
+//    panierRecup.splice(i, 1);
+//
+//    console.table(panierRecup);
+//  });
+//}
+
+// ---------------------------------------------------------------------------
