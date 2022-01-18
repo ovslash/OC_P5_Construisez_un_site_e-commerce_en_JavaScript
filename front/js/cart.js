@@ -13,19 +13,18 @@ async function rechercheArticles() {
 
 // creation du contenu de la page
 async function creationPanier() {
-  //--------------------
   let ArticleAPI = await rechercheArticles();
   const idArticlesAPI = await ArticleAPI.map((el) => el._id);
-  //------------------------
+  // -------------------
+
+  // -------------------
+
   for (let articles of panierRecup) {
     let id = articles["id"];
-    //------------------------
+
     let indexId = await idArticlesAPI.indexOf(id);
     let prix = await ArticleAPI[indexId].price;
-
-    //------------------------
     let couleur = articles["couleur"];
-
     let url = articles["url de l'image"];
     let txtAlt = articles["texte Alternatif"];
     let nom = articles["nom"];
@@ -43,8 +42,6 @@ async function creationPanier() {
 
     // creation de la balise div pour l'image de l'article
     let baliseDivImg = document.createElement("div");
-    // ---------------------------------------------------------------------------- REVOIR A PARTIR DE LA en ciblant "data-id" et "data-color"
-
     let bDivImg = bArticle.appendChild(baliseDivImg);
     bDivImg.classList.add("cart__item__img");
 
@@ -78,7 +75,7 @@ async function creationPanier() {
     ).innerText = couleur;
     bDivDetailsDescription.appendChild(
       baliseDivDetailsDescriptionP2
-    ).innerText = prix;
+    ).innerText = prix + " €";
 
     // creation div pour modifier les details
     let baliseDivModifDetails = document.createElement("div");
@@ -121,44 +118,98 @@ async function creationPanier() {
     bPSupprimer.classList.add("deleteItem");
     bPSupprimer.innerText = "supprimer";
   }
+  articleSuppression();
+  articleModifQuantite();
+  calculNombreArticle();
+  quantiteTotaleAffichage();
+  calculPrixTotal();
+  prixTotalAffichage();
 }
 creationPanier();
 
 // ---------------------------------------------------------------------------
 
-// gestion du bouton supprimer
-let boutonSupprimer = document.getElementsByClassName("deleteItem");
-console.log(boutonSupprimer);
-
-// bouton supprimer doit etre un tableau
-
-// boucle avec une itération par article
-for (let i = 0; i < boutonSupprimer.length; i++) {
-  boutonSupprimer[i].addEventListener("click", function () {
-    console.log(i);
-    // modification de localStorage
-    panierRecup.splice(i, 1);
-    console.table(panierRecup);
-    localStorage.setItem("contenuPanier", JSON.stringify(panierRecup));
-    // modification de l'affichage
-    baliseArticleASupprimer = boutonSupprimer[i].closest("article");
-    baliseArticleASupprimer.remove();
-  });
+// fonction suppression d'article du panier
+function articleSuppression() {
+  // gestion du bouton supprimer
+  let boutonSupprimer = document.getElementsByClassName("deleteItem");
+  // boucle avec une itération par article
+  for (let i = 0; i < boutonSupprimer.length; i++) {
+    boutonSupprimer[i].addEventListener("click", function () {
+      // modification de localStorage
+      panierRecup.splice(i, 1);
+      console.table(panierRecup);
+      localStorage.setItem("contenuPanier", JSON.stringify(panierRecup));
+      location.reload(); // MOCHE MAIS BON ...
+    });
+  }
+  quantiteTotaleAffichage();
+  calculPrixTotal();
+  prixTotalAffichage();
 }
 
 // ---------------------------------------------------------------------------
 
-// gestion modification quantite
-let quantiteModif = document.getElementsByClassName("itemQuantity");
-
-//for (let i = 0; i < quantiteModif.length; i++) {
-//  quantiteModif[i].addEventListener("change", function () {
-//    console.log(quantiteModif[i].value);
-//
-//    panierRecup.splice(i, 1);
-//
-//    console.table(panierRecup);
-//  });
-//}
+// fonction pour modifier la quantité d'un article
+function articleModifQuantite() {
+  // gestion modification quantite
+  let quantiteModif = document.getElementsByClassName("itemQuantity");
+  for (let i = 0; i < quantiteModif.length; i++) {
+    quantiteModif[i].addEventListener("change", function () {
+      quantiteNouvelle = quantiteModif[i].value;
+      panierRecup[i].quantité = quantiteNouvelle;
+      localStorage.setItem("contenuPanier", JSON.stringify(panierRecup));
+      calculNombreArticle();
+      quantiteTotaleAffichage();
+      calculPrixTotal();
+      prixTotalAffichage();
+    });
+  }
+}
 
 // ---------------------------------------------------------------------------
+
+// calcul du nombre total d'article
+function calculNombreArticle() {
+  let quantiteParArticle = document.getElementsByClassName("itemQuantity");
+  let total = 0;
+  for (let i = 0; i < quantiteParArticle.length; i++) {
+    q = quantiteParArticle[i].value;
+    qNumber = parseInt(q, 10);
+    total += qNumber;
+  }
+  return total;
+}
+
+// affichage du nombre total d'article
+function quantiteTotaleAffichage() {
+  let totalQuantiteAffiche = document.getElementById("totalQuantity");
+  let totalQuantitePanier = calculNombreArticle();
+  totalQuantiteAffiche.innerText = totalQuantitePanier;
+}
+
+// ---------------------------------------------------------------------------
+
+// calcul du prix total du panier
+async function calculPrixTotal() {
+  let prixTotal = 0;
+  let ArticleAPI = await rechercheArticles();
+  const idArticlesAPI = await ArticleAPI.map((el) => el._id);
+
+  for (let articles of panierRecup) {
+    let quantite = articles["quantité"];
+    let id = articles["id"];
+    let indexId = idArticlesAPI.indexOf(id);
+    let prix = ArticleAPI[indexId].price;
+    let prixTotalArticle = quantite * prix;
+    prixTotal += prixTotalArticle;
+  }
+  return prixTotal;
+}
+
+// affichage du prix total du panier
+async function prixTotalAffichage() {
+  let prixTotalAffiche = document.getElementById("totalPrice");
+  let prixTotalPanier = await calculPrixTotal();
+  prixTotalAffiche.innerText = prixTotalPanier;
+}
