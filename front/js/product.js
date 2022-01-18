@@ -114,6 +114,7 @@ async function ajoutPanier() {
     contenuPanier.push(kanapVersPanier);
     localStorage.setItem("contenuPanier", JSON.stringify(contenuPanier));
   }
+
   //-----------------------------------------------------------------------------------
 
   // affichage panier

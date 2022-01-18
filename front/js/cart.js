@@ -2,6 +2,11 @@
 let panierRecup = JSON.parse(localStorage.getItem("contenuPanier"));
 console.log("CONTENU DU PANIER DU LOCALSTORAGE =");
 console.table(panierRecup);
+panierRecup.sort(function compare(a, b) {
+  if (a.nom < b.nom) return -1;
+  if (a.nom > b.nom) return 1;
+  return 0;
+});
 
 // Recherche des articles présent dans l'API
 async function rechercheArticles() {
