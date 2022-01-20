@@ -134,6 +134,7 @@ function conditionAjoutPanier() {
   let boutonAjoutPanier = document.getElementById("addToCart");
   boutonAjoutPanier.addEventListener("click", function () {
     ajoutPanier();
+    alert("Article ajouté au panier");
   });
 }
 conditionAjoutPanier();

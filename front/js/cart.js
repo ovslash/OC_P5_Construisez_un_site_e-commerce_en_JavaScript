@@ -2,6 +2,8 @@
 let panierRecup = JSON.parse(localStorage.getItem("contenuPanier"));
 console.log("CONTENU DU PANIER DU LOCALSTORAGE =");
 console.table(panierRecup);
+
+// tri du panier
 panierRecup.sort(function compare(a, b) {
   if (a.nom < b.nom) return -1;
   if (a.nom > b.nom) return 1;
@@ -26,7 +28,6 @@ async function creationPanier() {
 
   for (let articles of panierRecup) {
     let id = articles["id"];
-
     let indexId = await idArticlesAPI.indexOf(id);
     let prix = await ArticleAPI[indexId].price;
     let couleur = articles["couleur"];
@@ -35,7 +36,6 @@ async function creationPanier() {
     let nom = articles["nom"];
     // let prix = articles["prix"];
     let quantite = articles["quantité"];
-
     // creation balise article
     let baliseArticle = document.createElement("article");
     let bArticle = document
@@ -218,3 +218,153 @@ async function prixTotalAffichage() {
   let prixTotalPanier = await calculPrixTotal();
   prixTotalAffiche.innerText = prixTotalPanier;
 }
+
+// ------------------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------------------
+
+// remplissage des verification du formulaire
+
+function formulaire() {
+  let donnéesFormulaire = document.querySelector(".cart__order__form");
+
+  // creation des RegExp
+  let lettresRegExp = new RegExp("^[a-zA-Z ,.'-]+$");
+
+  let addresseRegExp = new RegExp("[^A-Za-z0-9]");
+
+  let mailRegExp = new RegExp(
+    "^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$"
+  );
+
+  // modification du prénom
+  donnéesFormulaire.firstName.addEventListener("change", function () {
+    prenomVerification(this);
+  });
+  // validation du prénom
+  const prenomVerification = function (prenom) {
+    let prenomMessageErreur = prenom.nextElementSibling;
+    if (lettresRegExp.test(prenom.value)) {
+      prenomMessageErreur.innerHTML = "";
+    } else {
+      prenomMessageErreur.innerHTML = "Veuillez renseigner votre prénom";
+    }
+  };
+
+  // modification du nom de famille
+  donnéesFormulaire.lastName.addEventListener("change", function () {
+    nomVerification(this);
+  });
+  // validation du nom
+  const nomVerification = function (nom) {
+    let nomMessageErreur = nom.nextElementSibling;
+    if (lettresRegExp.test(nom.value)) {
+      nomMessageErreur.innerHTML = "";
+    } else {
+      nomMessageErreur.innerHTML = "Veuillez renseigner votre nom";
+    }
+  };
+
+  // modification de l'adresse
+  donnéesFormulaire.address.addEventListener("change", function () {
+    adresseVerification(this);
+  });
+  // validation de l'adresse
+  const adresseVerification = function (adresse) {
+    let adresseMessageErreur = adresse.nextElementSibling;
+    if (addresseRegExp.test(adresse.value)) {
+      adresseMessageErreur.innerHTML = "";
+    } else {
+      adresseMessageErreur.innerHTML = "Veuillez renseigner votre adresse";
+    }
+  };
+
+  // modification de la ville
+  donnéesFormulaire.city.addEventListener("change", function () {
+    villeVerification(this);
+  });
+  // validation de la ville
+  const villeVerification = function (ville) {
+    villeMessageErreur = ville.nextElementSibling;
+
+    if (lettresRegExp.test(ville.value)) {
+      villeMessageErreur.innerHTML = "";
+    } else {
+      villeMessageErreur.innerHTML = "Veuillez renseigner votre ville";
+    }
+  };
+
+  // modification du mail
+  donnéesFormulaire.email.addEventListener("change", function () {
+    mailVerification(this);
+  });
+  // validation de l'email
+  const mailVerification = function (mail) {
+    let mailMessageErreur = mail.nextElementSibling;
+    if (mailRegExp.test(mail.value)) {
+      mailMessageErreur.innerHTML = "";
+    } else {
+      mailMessageErreur.innerHTML = "Veuillez renseigner votre email.";
+    }
+  };
+}
+formulaire();
+
+// ---------------------------------------------------------------------------------------------------
+
+// fonction pour l'envoi du formulaire
+function envoiFormulaire() {
+  let boutonCommander = document.getElementById("order");
+
+  // declencheur bouton commander
+  boutonCommander.addEventListener("click", () => {
+    // info du formulaire
+    let prenom = document.getElementById("firstName");
+    let nom = document.getElementById("lastName");
+    let adresse = document.getElementById("address");
+    let ville = document.getElementById("city");
+    let mail = document.getElementById("email");
+
+    //Construction d'un array depuis le local storage
+    let idProducts = [];
+    for (let i = 0; i < panierRecup.length; i++) {
+      idProducts.push(panierRecup[i].id);
+    }
+
+    const order = {
+      contact: {
+        firstName: prenom.value,
+        lastName: nom.value,
+        address: adresse.value,
+        city: ville.value,
+        email: mail.value,
+      },
+      products: idProducts,
+    };
+
+    const envoi = {
+      method: "POST",
+      body: JSON.stringify(order),
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    };
+
+    fetch("http://localhost:3000/api/products/order", envoi)
+      //.then((reponse) => reponse.json())
+      .then(function (reponseAPI) {
+        return reponseAPI.json();
+      })
+
+      .then(function (reponseID) {
+        console.log(reponseID);
+        localStorage.clear();
+        localStorage.setItem("orderId", reponseID.orderId);
+        document.location.href = "confirmation.html";
+      })
+      .catch(function (erreur) {
+        console.log(erreur);
+      });
+  });
+}
+envoiFormulaire();
