@@ -94,25 +94,30 @@ async function ajoutPanier() {
 
   // creation panier si panier vide
   let contenuPanier = JSON.parse(localStorage.getItem("contenuPanier"));
-  if (contenuPanier === null) {
-    contenuPanier = [];
-  }
+  if (Number(quantite) > 0 && Number(quantite) <= 100 && couleur) {
+    if (contenuPanier === null) {
+      contenuPanier = [];
+    }
 
-  // Recherche si id/couleur déjà présent dans le panier
-  let dejaPresent = contenuPanier.find(
-    (element) => element.id === idArticle() && element.couleur === couleur
-  );
+    // Recherche si id/couleur déjà présent dans le panier
+    let dejaPresent = contenuPanier.find(
+      (element) => element.id === idArticle() && element.couleur === couleur
+    );
 
-  // mise à jour du panier si id/couleur déjà présent dans le panier
-  if (dejaPresent) {
-    let quantiteAvant = Number(dejaPresent.quantité);
-    let quantitePlus = Number(quantite);
-    dejaPresent.quantité = quantiteAvant + quantitePlus;
-    localStorage.setItem("contenuPanier", JSON.stringify(contenuPanier));
+    // mise à jour du panier si id/couleur déjà présent dans le panier
+    if (dejaPresent) {
+      let quantiteAvant = Number(dejaPresent.quantité);
+      let quantitePlus = Number(quantite);
+      dejaPresent.quantité = quantiteAvant + quantitePlus;
+      localStorage.setItem("contenuPanier", JSON.stringify(contenuPanier));
+    } else {
+      // mise à jour du panier si id/couleur non présent dans le panier
+      contenuPanier.push(kanapVersPanier);
+      localStorage.setItem("contenuPanier", JSON.stringify(contenuPanier));
+    }
+    alert("Votre article a bien été ajouté au panier.");
   } else {
-    // mise à jour du panier si id/couleur non présent dans le panier
-    contenuPanier.push(kanapVersPanier);
-    localStorage.setItem("contenuPanier", JSON.stringify(contenuPanier));
+    alert("Vueillez selectionner une couleur et une quantité entre 0 et 100.");
   }
 
   //-----------------------------------------------------------------------------------
@@ -134,7 +139,6 @@ function conditionAjoutPanier() {
   let boutonAjoutPanier = document.getElementById("addToCart");
   boutonAjoutPanier.addEventListener("click", function () {
     ajoutPanier();
-    alert("Article ajouté au panier");
   });
 }
 conditionAjoutPanier();
