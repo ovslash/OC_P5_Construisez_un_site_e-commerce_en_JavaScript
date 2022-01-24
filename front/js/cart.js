@@ -4,11 +4,16 @@ console.log("CONTENU DU PANIER DU LOCALSTORAGE =");
 console.table(panierRecup);
 
 // tri du panier
-panierRecup.sort(function compare(a, b) {
-  if (a.nom < b.nom) return -1;
-  if (a.nom > b.nom) return 1;
+function comparaisonID(x, y) {
+  if (x.id < y.id) {
+    return -1;
+  }
+  if (x.id > y.id) {
+    return 1;
+  }
   return 0;
-});
+}
+panierRecup.sort(comparaisonID);
 
 // Recherche des articles présent dans l'API
 async function rechercheArticles() {
@@ -26,7 +31,7 @@ function rechercheArticlesTEST() {
     });
 }
 
-// ------------------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------
 
 // creation du contenu de la page
 async function creationPanier() {
@@ -246,12 +251,12 @@ function prixTotal() {
     });
 }
 
-// ------------------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------
 
 // formulaire
 
 function formulaire() {
-  let donnéesFormulaire = document.querySelector(".cart__order__form");
+  let donneesFormulaire = document.querySelector(".cart__order__form");
 
   // creation des RegExp
   let lettresRegExp = new RegExp("^[a-zA-Z ,.'-]+$");
@@ -263,7 +268,7 @@ function formulaire() {
   );
 
   // modification du prénom
-  donnéesFormulaire.firstName.addEventListener("change", function () {
+  donneesFormulaire.firstName.addEventListener("change", function () {
     prenomVerification(this);
   });
   // validation du prénom
@@ -277,7 +282,7 @@ function formulaire() {
   };
 
   // modification du nom de famille
-  donnéesFormulaire.lastName.addEventListener("change", function () {
+  donneesFormulaire.lastName.addEventListener("change", function () {
     nomVerification(this);
   });
   // validation du nom
@@ -291,7 +296,7 @@ function formulaire() {
   };
 
   // modification de l'adresse
-  donnéesFormulaire.address.addEventListener("change", function () {
+  donneesFormulaire.address.addEventListener("change", function () {
     adresseVerification(this);
   });
   // validation de l'adresse
@@ -305,7 +310,7 @@ function formulaire() {
   };
 
   // modification de la ville
-  donnéesFormulaire.city.addEventListener("change", function () {
+  donneesFormulaire.city.addEventListener("change", function () {
     villeVerification(this);
   });
   // validation de la ville
@@ -320,7 +325,7 @@ function formulaire() {
   };
 
   // modification du mail
-  donnéesFormulaire.email.addEventListener("change", function () {
+  donneesFormulaire.email.addEventListener("change", function () {
     mailVerification(this);
   });
   // validation de l'email
@@ -335,7 +340,7 @@ function formulaire() {
 }
 formulaire();
 
-// ---------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------
 
 // fonction pour l'envoi du formulaire
 function envoiFormulaire() {
