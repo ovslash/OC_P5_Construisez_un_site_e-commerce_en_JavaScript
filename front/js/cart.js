@@ -50,7 +50,7 @@ async function creationPanier() {
         let url = ArticleAPI[indexId].imageUrl;
         let txtAlt = ArticleAPI[indexId].altTxt;
         let nom = ArticleAPI[indexId].name;
-        let quantite = articles["quantité"];
+        let quantite = articles["quantite"];
         // creation balise article
         let baliseArticle = document.createElement("article");
         let bArticle = document
@@ -182,7 +182,7 @@ function articleModifQuantite() {
   for (let i = 0; i < quantiteModif.length; i++) {
     quantiteModif[i].addEventListener("change", function () {
       quantiteNouvelle = quantiteModif[i].value;
-      panierRecup[i].quantité = quantiteNouvelle;
+      panierRecup[i].quantite = quantiteNouvelle;
       localStorage.setItem("contenuPanier", JSON.stringify(panierRecup));
       calculNombreArticle();
       quantiteTotaleAffichage();
@@ -225,7 +225,7 @@ function prixTotal() {
     .then(function (ArticleAPI) {
       let idArticlesAPI = ArticleAPI.map((el) => el._id);
       for (let articles of panierRecup) {
-        let quantite = articles["quantité"];
+        let quantite = articles["quantite"];
         let id = articles["id"];
         let indexId = idArticlesAPI.indexOf(id);
         let prix = ArticleAPI[indexId].price;

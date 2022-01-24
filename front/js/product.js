@@ -77,7 +77,7 @@ function ajoutPanier() {
   let kanapVersPanier = {
     id: idArticle(),
     couleur: couleur,
-    quantité: quantite,
+    quantite: quantite,
   };
 
   // creation panier si panier vide
@@ -94,9 +94,9 @@ function ajoutPanier() {
 
     // mise à jour du panier si id/couleur déjà présent dans le panier
     if (dejaPresent) {
-      let quantiteAvant = Number(dejaPresent.quantité);
+      let quantiteAvant = Number(dejaPresent.quantite);
       let quantitePlus = Number(quantite);
-      dejaPresent.quantité = quantiteAvant + quantitePlus;
+      dejaPresent.quantite = quantiteAvant + quantitePlus;
       localStorage.setItem("contenuPanier", JSON.stringify(contenuPanier));
     } else {
       // mise à jour du panier si id/couleur non présent dans le panier
