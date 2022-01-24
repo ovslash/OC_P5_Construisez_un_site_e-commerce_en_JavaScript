@@ -12,66 +12,59 @@ function affichageIdArticle() {
 }
 // affichageIdArticle();
 
-// Recherche des details de l'article venant de l'API
-async function rechercheDetailsArticle() {
-  let id = idArticle();
-  let detailstrouves = await fetch("http://localhost:3000/api/products/" + id);
-  return await detailstrouves.json();
-}
-
-// affichage des details trouvés
-async function affichageDetails() {
-  let details = rechercheDetailsArticle();
-  console.log(details);
-}
-//affichageDetails();
-
 // -----------------------------------------------------------------------------------
 
 // creation du contenu de la page
-async function creationFiche() {
-  let details = await rechercheDetailsArticle();
+function creationFiche() {
+  let id = idArticle();
+  fetch("http://localhost:3000/api/products/" + id)
+    .then(function (reponseAPI) {
+      return reponseAPI.json();
+    })
 
-  // description de l'article
-  let description = await details["description"];
-  document.getElementById("description").innerText = await description;
+    .then(function (details) {
+      // description de l'article
+      let description = details["description"];
+      document.getElementById("description").innerText = description;
 
-  // image de l'article
-  let img = document.createElement("img");
-  let altTxt = await details["altTxt"];
-  let imageUrl = await details["imageUrl"];
-  document.querySelector(".item__img").appendChild(img).src = await imageUrl;
-  document.querySelector(".item__img").appendChild(img).alt = await altTxt;
+      // image de l'article
+      let img = document.createElement("img");
+      let altTxt = details["altTxt"];
+      let imageUrl = details["imageUrl"];
+      document.querySelector(".item__img").appendChild(img).src = imageUrl;
+      document.querySelector(".item__img").appendChild(img).alt = altTxt;
 
-  // nom de l'article
-  let name = await details["name"];
-  document.getElementById("title").innerText = await name;
+      // nom de l'article
+      let name = details["name"];
+      document.getElementById("title").innerText = name;
 
-  // choix des couleurs
-  let couleurs = await details["colors"];
-  for (let i in couleurs) {
-    let option = document.createElement("option");
-    document.getElementById("colors").appendChild(option).innerText =
-      await couleurs[i];
-    document.getElementById("colors").appendChild(option).value =
-      await couleurs[i];
-  }
+      // choix des couleurs
+      let couleurs = details["colors"];
+      for (let i in couleurs) {
+        let option = document.createElement("option");
+        document.getElementById("colors").appendChild(option).innerText =
+          couleurs[i];
+        document.getElementById("colors").appendChild(option).value =
+          couleurs[i];
+      }
 
-  // prix de l'article
-  let prix = details["price"];
-  document.getElementById("price").innerText = await prix;
+      // prix de l'article
+      let prix = details["price"];
+      document.getElementById("price").innerText = prix;
+    })
+
+    .catch(function (erreur) {
+      console.log(
+        "Erreur lors de la communication avec l'API pour la creation de la page"
+      );
+      console.log(erreur);
+    });
 }
 creationFiche();
 
 // -----------------------------------------------------------------------------------
 
-async function ajoutPanier() {
-  let details = await rechercheDetailsArticle();
-  let nom = await details["name"];
-  let prix = await details["price"];
-  let altTxt = await details["altTxt"];
-  let imageUrl = await details["imageUrl"];
-
+function ajoutPanier() {
   // recupération de la couleur choisie
   let choixCouleur = document.getElementById("colors");
   let couleur = choixCouleur.value;
@@ -85,12 +78,7 @@ async function ajoutPanier() {
     id: idArticle(),
     couleur: couleur,
     quantité: quantite,
-    nom: nom,
-    "texte Alternatif": altTxt,
-    "url de l'image": imageUrl,
   };
-
-  //-----------------------------------------------------------------------------------
 
   // creation panier si panier vide
   let contenuPanier = JSON.parse(localStorage.getItem("contenuPanier"));
@@ -127,7 +115,7 @@ async function ajoutPanier() {
   console.log("CONTENU DU PANIER =");
   console.table(panier);
   console.log(
-    "================================================================================================================================================"
+    "================================================================="
   );
 }
 

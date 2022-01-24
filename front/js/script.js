@@ -1,19 +1,27 @@
-// Recherche des articles présent dans l'API
-async function rechercheArticles() {
-  let articlesTrouves = await fetch("http://localhost:3000/api/products");
-  return await articlesTrouves.json();
-}
-
 // affichage articles dans l'API sous forme de tableau
-async function affichageArticles() {
-  let articles = await rechercheArticles();
-  console.table(articles);
+function affichageArticles() {
+  fetch("http://localhost:3000/api/products")
+    .then(function (reponse) {
+      return reponse.json();
+    })
+    .then(function (reponse) {
+      console.table(reponse);
+    })
+    .catch(function (erreur) {
+      console.log(
+        "Erreur lors de la communication avec l'API pour l'affichage des articles présent dans l'API"
+      );
+      console.log(erreur);
+    });
 }
 affichageArticles();
 
 // fonction creation des vignettes
 async function lesVignettes() {
-  await rechercheArticles()
+  fetch("http://localhost:3000/api/products")
+    .then(function (reponse) {
+      return reponse.json();
+    })
     .then(function (articles) {
       // mise en place boucle pour création vignette pour chaque articles
       for (let article of articles) {
@@ -48,6 +56,9 @@ async function lesVignettes() {
       }
     })
     .catch(function (erreur) {
+      console.log(
+        "Erreur lors de la communication avec l'API pour la construction de la page"
+      );
       console.log(erreur);
     });
 }
