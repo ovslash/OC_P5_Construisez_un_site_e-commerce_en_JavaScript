@@ -389,7 +389,7 @@ function envoiFormulaire() {
       .then(function (reponseID) {
         localStorage.clear();
         localStorage.setItem("orderId", reponseID.orderId);
-        window.location.href = "confirmation.html";
+        document.location.href = "confirmation.html";
       })
       .catch(function (erreur) {
         console.log(erreur);
