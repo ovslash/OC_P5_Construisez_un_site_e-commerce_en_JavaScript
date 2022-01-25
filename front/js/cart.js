@@ -344,10 +344,11 @@ formulaire();
 
 // fonction pour l'envoi du formulaire
 function envoiFormulaire() {
-  let boutonCommander = document.getElementById("order");
-
+  let boutonCommander = document.querySelector("form");
+  console.log(boutonCommander);
   // declencheur bouton commander
-  boutonCommander.addEventListener("click", () => {
+  boutonCommander.addEventListener("submit", function (event) {
+    event.preventDefault();
     // info du formulaire
     let prenom = document.getElementById("firstName");
     let nom = document.getElementById("lastName");
