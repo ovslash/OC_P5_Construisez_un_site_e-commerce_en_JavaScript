@@ -12,8 +12,6 @@ function affichageIdArticle() {
 }
 // affichageIdArticle();
 
-// -----------------------------------------------------------------------------------
-
 // creation du contenu de la page
 function creationFiche() {
   let id = idArticle();
@@ -62,8 +60,7 @@ function creationFiche() {
 }
 creationFiche();
 
-// -----------------------------------------------------------------------------------
-
+// fonction pour l'ajout de l'article au panier
 function ajoutPanier() {
   // recupération de la couleur choisie
   let choixCouleur = document.getElementById("colors");

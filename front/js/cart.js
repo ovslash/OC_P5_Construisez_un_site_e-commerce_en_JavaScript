@@ -1,9 +1,9 @@
 // recupération du contenu du localStorage
 let panierRecup = JSON.parse(localStorage.getItem("contenuPanier"));
-console.log("CONTENU DU PANIER DU LOCALSTORAGE =");
+console.log("CONTENU DU PANIER DU LOCALSTORAGE AU CHARGEMENT DE LA PAGE =");
 console.table(panierRecup);
 
-// tri du panier
+// tri du panier par id
 function comparaisonID(x, y) {
   if (x.id < y.id) {
     return -1;
@@ -15,23 +15,11 @@ function comparaisonID(x, y) {
 }
 panierRecup.sort(comparaisonID);
 
-// Recherche des articles présent dans l'API
+// Recherche des articles présents dans l'API
 async function rechercheArticles() {
   let articlesTrouves = await fetch("http://localhost:3000/api/products");
   return await articlesTrouves.json();
 }
-
-// Recherche des articles présent dans l'API ----------- TEST
-function rechercheArticlesTEST() {
-  fetch("http://localhost:3000/api/products")
-    .then((reponse) => reponse.json())
-    .catch(function (error) {
-      console.log("Erreur lors de la communication avec l'API");
-      console.log(error);
-    });
-}
-
-// ------------------------------------------------------------
 
 // creation du contenu de la page
 async function creationPanier() {
@@ -39,13 +27,11 @@ async function creationPanier() {
     .then(function (reponseAPI) {
       return reponseAPI.json();
     })
+
     .then(function (ArticleAPI) {
-      console.log("Contenu de l'API =");
+      console.log("CONTENU DE L'API =");
       console.table(ArticleAPI);
       let idArticlesAPI = ArticleAPI.map((el) => el._id);
-      // -------------------
-
-      // -------------------
 
       for (let articles of panierRecup) {
         let id = articles["id"];
@@ -158,12 +144,11 @@ async function creationPanier() {
 }
 creationPanier();
 
-// ---------------------------------------------------------------------------
-
 // fonction suppression d'article du panier
 function articleSuppression() {
   // gestion du bouton supprimer
   let boutonSupprimer = document.getElementsByClassName("deleteItem");
+
   // boucle avec une itération par article
   for (let i = 0; i < boutonSupprimer.length; i++) {
     boutonSupprimer[i].addEventListener("click", function () {
@@ -171,19 +156,18 @@ function articleSuppression() {
       panierRecup.splice(i, 1);
       console.table(panierRecup);
       localStorage.setItem("contenuPanier", JSON.stringify(panierRecup));
-      location.reload(); // MOCHE MAIS BON ...
+      location.reload();
     });
   }
   quantiteTotaleAffichage();
   prixTotal();
 }
 
-// ---------------------------------------------------------------------------
-
 // fonction pour modifier la quantité d'un article
 function articleModifQuantite() {
   // gestion modification quantite
   let quantiteModif = document.getElementsByClassName("itemQuantity");
+
   for (let i = 0; i < quantiteModif.length; i++) {
     quantiteModif[i].addEventListener("change", function () {
       quantiteNouvelle = quantiteModif[i].value;
@@ -196,12 +180,11 @@ function articleModifQuantite() {
   }
 }
 
-// ---------------------------------------------------------------------------
-
 // calcul du nombre total d'article
 function calculNombreArticle() {
   let quantiteParArticle = document.getElementsByClassName("itemQuantity");
   let total = 0;
+
   for (let i = 0; i < quantiteParArticle.length; i++) {
     q = quantiteParArticle[i].value;
     qNumber = parseInt(q, 10);
@@ -217,9 +200,7 @@ function quantiteTotaleAffichage() {
   totalQuantiteAffiche.innerText = totalQuantitePanier;
 }
 
-// ---------------------------------------------------------------------------
-
-// calcul du prix total du panier
+// calcul et affichage du prix total du panier
 function prixTotal() {
   let prixTotal = 0;
 
@@ -227,6 +208,7 @@ function prixTotal() {
     .then(function (reponseAPI) {
       return reponseAPI.json();
     })
+    // calcul du prix total
     .then(function (ArticleAPI) {
       let idArticlesAPI = ArticleAPI.map((el) => el._id);
       for (let articles of panierRecup) {
@@ -239,7 +221,7 @@ function prixTotal() {
       }
       return prixTotal;
     })
-
+    // affichage du prix total
     .then(function (prixtotal) {
       let prixTotalAffiche = document.getElementById("totalPrice");
       prixTotalAffiche.innerText = prixtotal;
@@ -251,18 +233,13 @@ function prixTotal() {
     });
 }
 
-// ---------------------------------------------------------
-
 // formulaire
-
 function formulaire() {
   let donneesFormulaire = document.querySelector(".cart__order__form");
 
   // creation des RegExp
   let lettresRegExp = new RegExp("^[a-zA-Z ,.'-]+$");
-
   let addresseRegExp = new RegExp("[^A-Za-z0-9]");
-
   let mailRegExp = new RegExp(
     "^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$"
   );
@@ -271,6 +248,7 @@ function formulaire() {
   donneesFormulaire.firstName.addEventListener("change", function () {
     prenomVerification(this);
   });
+
   // validation du prénom
   const prenomVerification = function (prenom) {
     let prenomMessageErreur = prenom.nextElementSibling;
@@ -285,6 +263,7 @@ function formulaire() {
   donneesFormulaire.lastName.addEventListener("change", function () {
     nomVerification(this);
   });
+
   // validation du nom
   const nomVerification = function (nom) {
     let nomMessageErreur = nom.nextElementSibling;
@@ -299,6 +278,7 @@ function formulaire() {
   donneesFormulaire.address.addEventListener("change", function () {
     adresseVerification(this);
   });
+
   // validation de l'adresse
   const adresseVerification = function (adresse) {
     let adresseMessageErreur = adresse.nextElementSibling;
@@ -313,6 +293,7 @@ function formulaire() {
   donneesFormulaire.city.addEventListener("change", function () {
     villeVerification(this);
   });
+
   // validation de la ville
   const villeVerification = function (ville) {
     villeMessageErreur = ville.nextElementSibling;
@@ -328,6 +309,7 @@ function formulaire() {
   donneesFormulaire.email.addEventListener("change", function () {
     mailVerification(this);
   });
+
   // validation de l'email
   const mailVerification = function (mail) {
     let mailMessageErreur = mail.nextElementSibling;
@@ -340,15 +322,14 @@ function formulaire() {
 }
 formulaire();
 
-// ------------------------------------------------------------
-
 // fonction pour l'envoi du formulaire
 function envoiFormulaire() {
   let boutonCommander = document.querySelector("form");
-  console.log(boutonCommander);
+
   // declencheur bouton commander
   boutonCommander.addEventListener("submit", function (event) {
     event.preventDefault();
+
     // info du formulaire
     let prenom = document.getElementById("firstName");
     let nom = document.getElementById("lastName");

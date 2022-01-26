@@ -5,6 +5,7 @@ function affichageArticles() {
       return reponse.json();
     })
     .then(function (reponse) {
+      console.log("LISTE DES ARTICLES DANS L'API =");
       console.table(reponse);
     })
     .catch(function (erreur) {
